@@ -11,7 +11,7 @@ use core::cell::{RefCell, RefMut};
 /// `exclusive_access`.
 pub struct UPSafeCell<T> {
     /// inner data
-    inner: RefCell<T>,
+    pub(crate) inner: RefCell<T>,
 }
 
 unsafe impl<T> Sync for UPSafeCell<T> {}
