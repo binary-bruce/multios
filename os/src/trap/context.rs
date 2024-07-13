@@ -20,7 +20,7 @@ impl TrapContext {
     }
 
     /// init the app context
-    pub fn app_init_context(entry: usize, sp: usize) -> Self {
+    pub fn app_init_context(entry: usize, user_sp: usize) -> Self {
         let mut sstatus = sstatus::read();
         // set previous privilege mode: user mode, used to jump from supervisor mode
         sstatus.set_spp(SPP::User);
@@ -30,7 +30,7 @@ impl TrapContext {
             sstatus,
             sepc: entry, // entry point of app
         };
-        cx.set_sp(sp); // app's user stack pointer
+        cx.set_sp(user_sp); // app's user stack pointer
 
         cx
     }
