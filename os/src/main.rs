@@ -25,9 +25,12 @@ use core::arch::global_asm;
 
 #[macro_use]
 mod console;
+mod config;
 mod lang_items;
 mod sbi;
+mod sync;
 mod syscall;
+mod task;
 mod trap;
 
 global_asm!(include_str!("entry.asm"));
