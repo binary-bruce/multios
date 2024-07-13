@@ -1,16 +1,10 @@
 //! Loading user applications into memory
-//!
-//! For chapter 3, user applications are simply part of the data included in the
-//! kernel binary, so we only need to copy them to the space allocated for each
-//! app to load them. We also allocate fixed spaces for each task's
-//! [`KernelStack`] and [`UserStack`].
-
-mod stack;
 
 use core::arch::asm;
 
 use crate::{
     config::{APP_BASE_ADDRESS, APP_SIZE_LIMIT, KERNEL_STACK_SIZE, MAX_APP_NUM, USER_STACK_SIZE},
+    stack,
     trap::TrapContext,
 };
 use stack::{KernelStack, UserStack};
@@ -62,7 +56,7 @@ pub fn load_apps() {
 }
 
 /// get app info with entry and sp and save `TrapContext` in kernel stack
-pub fn init_app_cx(app_id: usize) -> usize {
+pub fn init_trap_cx(app_id: usize) -> usize {
     KERNER_STACK[app_id].push_context(TrapContext::app_init_context(
         get_base_i(app_id),
         USER_STACK[app_id].get_sp(),

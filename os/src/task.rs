@@ -10,7 +10,7 @@ use tcb::{TaskControllBlock, TaskStatus};
 
 use crate::{
     config::MAX_APP_NUM,
-    loader::{get_num_app, init_app_cx},
+    loader::{get_num_app, init_trap_cx},
     sync::UPSafeCell,
 };
 
@@ -25,7 +25,8 @@ lazy_static! {
         let mut tasks = [init_tcb; MAX_APP_NUM];
 
         for (i, task) in tasks.iter_mut().enumerate() {
-            task.task_cx = TaskContext::goto_restore(init_app_cx(i));
+            let kernel_sp = init_trap_cx(i);
+            task.task_cx = TaskContext::goto_restore(kernel_sp);
             task.task_status = TaskStatus::Ready;
         }
 
