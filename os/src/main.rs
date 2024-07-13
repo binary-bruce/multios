@@ -27,6 +27,8 @@ use core::arch::global_asm;
 mod console;
 mod lang_items;
 mod sbi;
+mod syscall;
+mod trap;
 
 global_asm!(include_str!("entry.asm"));
 
@@ -48,7 +50,10 @@ fn clear_bss() {
 #[no_mangle]
 pub fn rust_main() -> ! {
     clear_bss();
-    println!("[kernel] Hello, world!");
+    println!("[kernel] Cleared bss segment");
+
+    trap::init();
+    println!("[kernel] Initiated trap handler");
 
     panic!("Unreachable in rust_main!");
 }
