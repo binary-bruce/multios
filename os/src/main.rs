@@ -27,14 +27,15 @@ use core::arch::global_asm;
 mod console;
 mod config;
 mod lang_items;
+mod loader;
 mod sbi;
 mod sync;
 mod syscall;
 mod task;
 mod trap;
-mod loader;
 
 global_asm!(include_str!("entry.asm"));
+global_asm!(include_str!("link_app.S"));
 
 /// clear BSS
 fn clear_bss() {
@@ -58,6 +59,12 @@ pub fn rust_main() -> ! {
 
     trap::init();
     println!("[kernel] Initiated trap handler");
+
+    loader::load_apps();
+    println!("[kernel] Loaded tasks");
+
+    println!("[kernel] Starting to run first task");
+    task::run_first_task();
 
     panic!("Unreachable in rust_main!");
 }
