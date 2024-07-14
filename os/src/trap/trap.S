@@ -58,22 +58,14 @@ __alltraps:
 # case1: start running app by __restore
 # case2: back to U after handling trap
 __restore:
-    # a0 is the address of trap context, see batch.rs: `__restore(ctx as *const _ as usize);`
-    # the address of trap context is actually the kernel stack after pushing the trap context to kernel stack
-    mv sp, a0 # now sp->kernel stack(after allocated)
-    
-    # sstatus in trap context, it has information of the previous privilege which is set to user mode
+    # now sp->kernel stack(after allocated), sscratch->user stack
+    # restore sstatus/sepc
     ld t0, 32*8(sp)
-
-     # sepc in trap context, the entry point of user mode
     ld t1, 33*8(sp)
-
-    # user stack
     ld t2, 2*8(sp)
     csrw sstatus, t0
     csrw sepc, t1
-    csrw sscratch, t2 # sscratch->user stack
-    
+    csrw sscratch, t2
     # restore general-purpuse registers except sp/tp
     ld x1, 1*8(sp)
     ld x3, 3*8(sp)
@@ -82,12 +74,8 @@ __restore:
         LOAD_GP %n
         .set n, n+1
     .endr
-
     # release TrapContext on kernel stack
     addi sp, sp, 34*8
-
-    # now sp->user stack, sscratch->kernel stack
+    # now sp->kernel stack, sscratch->user stack
     csrrw sp, sscratch, sp
-
-    # switch to user mode from supervisor mode
     sret

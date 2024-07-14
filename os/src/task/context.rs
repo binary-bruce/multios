@@ -1,7 +1,7 @@
 //! Implementation of [`TaskContext`]
 
 /// TaskContext
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 #[repr(C)]
 pub struct TaskContext {
     /// return address (e.g. __restore) of __switch function
@@ -25,14 +25,14 @@ impl TaskContext {
     }
 
     /// set task context
-    pub fn goto_restore(kstack_ptr: usize) -> Self {
+    pub fn goto_restore(kernel_sp: usize) -> Self {
         extern "C" {
             fn __restore();
         }
 
         Self {
             ra: __restore as usize,
-            sp: kstack_ptr,
+            sp: kernel_sp,
             s: [0; 12],
         }
     }

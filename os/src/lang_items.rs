@@ -11,7 +11,7 @@ fn panic(info: &PanicInfo) -> ! {
             "[kernel] Panicked at {}:{} {}",
             location.file(),
             location.line(),
-            info.message()
+            info.message(),
         );
     } else {
         error!("[kernel] Panicked: {}", info.message());

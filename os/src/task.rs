@@ -8,20 +8,25 @@ use lazy_static::lazy_static;
 use manager::{TaskManager, TaskManagerInner};
 use tcb::{TaskControllBlock, TaskStatus};
 
-use crate::{config::MAX_APP_NUM, sync::UPSafeCell};
+use crate::{
+    config::MAX_APP_NUM,
+    loader::{get_num_app, init_trap_cx},
+    sync::UPSafeCell,
+};
 
 lazy_static! {
     /// Global variable: TASK_MANAGER
     pub static ref TASK_MANAGER: TaskManager = {
-        let num_app = 3;
+        let num_app = get_num_app();
         let init_tcb = TaskControllBlock {
             task_cx: TaskContext::zero_init(),
             task_status: tcb::TaskStatus::UnInit,
         };
         let mut tasks = [init_tcb; MAX_APP_NUM];
 
-        for (_i, task) in tasks.iter_mut().enumerate() {
-            task.task_cx = TaskContext::goto_restore(0);
+        for (i, task) in tasks.iter_mut().enumerate() {
+            let kernel_sp = init_trap_cx(i);
+            task.task_cx = TaskContext::goto_restore(kernel_sp);
             task.task_status = TaskStatus::Ready;
         }
 

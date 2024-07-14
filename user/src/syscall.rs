@@ -18,8 +18,8 @@ fn syscall(id: usize, args: [usize; 3]) -> isize {
     ret
 }
 
-pub fn sys_write(_fd: usize, buffer: &[u8]) -> isize {
-    syscall(SYSCALL_WRITE, [buffer.as_ptr() as usize, buffer.len(), 0])
+pub fn sys_write(fd: usize, buffer: &[u8]) -> isize {
+    syscall(SYSCALL_WRITE, [fd, buffer.as_ptr() as usize, buffer.len()])
 }
 
 pub fn sys_exit(exit_code: i32) -> isize {

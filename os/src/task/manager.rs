@@ -23,16 +23,23 @@ pub struct TaskManagerInner {
 
 impl TaskManager {
     pub(crate) fn run_first_task(&self) -> ! {
+        println!("[task manager] Running first task");
+
         let mut inner = self.inner.exclusive_access();
         let task0 = &mut inner.tasks[0];
         task0.task_status = TaskStatus::Running;
-        let first_task_cx_ptr = &mut task0.task_cx as *mut TaskContext;
+        let first_task_cx = &task0.task_cx as *const TaskContext;
         drop(inner);
 
         let mut _unused = TaskContext::zero_init();
         unsafe {
-            __switch(&mut _unused as *mut TaskContext, first_task_cx_ptr);
+            println!(
+                "[task manager] Switching context for the first task: {:?}",
+                *first_task_cx
+            );
+            __switch(&mut _unused as *mut TaskContext, first_task_cx);
         }
+
         panic!("unreachable in run_first_task!");
     }
 

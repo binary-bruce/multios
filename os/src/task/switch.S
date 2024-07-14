@@ -26,7 +26,7 @@ __switch:
     .endr
 
     # restore ra & s0~s11 of next execution
-    ld ra, 0(a1)
+    ld ra, 0(a1) # ra in task context
     .set n, 0
     .rept 12
         LOAD_SN %n
@@ -35,4 +35,7 @@ __switch:
     
     # restore kernel stack of next task
     ld sp, 8(a1)
+
+    # start to run the next task, 
+    # jump to instruction specified by ra in the task context
     ret

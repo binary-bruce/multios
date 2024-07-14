@@ -14,7 +14,7 @@
 
 /// Trap Context
 mod context;
-use context::TrapContext;
+pub use context::TrapContext;
 
 use crate::syscall::syscall;
 use core::arch::global_asm;
