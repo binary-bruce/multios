@@ -22,7 +22,7 @@ impl KernelStack {
 
     /// return the pointer of the trap context in kernel stack
     pub(crate) fn push_context(&self, trap_cx: TrapContext) -> usize {
-        let trap_cx_ptr = (self.get_sp() - size_of::<TrapContext>()) as *mut TrapContext;
+        let trap_cx_ptr = (self.get_sp() - core::mem::size_of::<TrapContext>()) as *mut TrapContext;
         unsafe {
             *trap_cx_ptr = trap_cx;
         }
