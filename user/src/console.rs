@@ -1,11 +1,11 @@
-use core::fmt::{Arguments, Write};
+use core::fmt::{Arguments, Result, Write};
 
 struct Stdout;
 
 const STDOUT: usize = 1;
 
 impl Write for Stdout {
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+    fn write_str(&mut self, s: &str) -> Result {
         super::write(STDOUT, s.as_bytes());
         Ok(())
     }
